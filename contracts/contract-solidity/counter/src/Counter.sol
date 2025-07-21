@@ -47,4 +47,12 @@ contract Counter {
     function addFromMsgValue() public payable {
         number = number + msg.value;
     }
+
+    /**
+     * @dev Returns the current value of the number
+     * @return The current number value
+     */
+    function getNumber() public view returns (uint256) {
+        return number;
+    }
 }

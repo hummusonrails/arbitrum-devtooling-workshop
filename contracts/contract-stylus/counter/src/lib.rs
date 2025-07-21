@@ -76,6 +76,11 @@ impl Counter {
         let number = self.number.get();
         self.set_number(number + self.vm().msg_value());
     }
+
+    /// Gets the current number value from storage.
+    pub fn get_number(&self) -> U256 {
+        self.number.get()
+    }
 }
 
 #[cfg(test)]
@@ -107,5 +112,31 @@ mod test {
 
         contract.add_from_msg_value();
         assert_eq!(U256::from(102), contract.number());
+    }
+
+    #[test]
+    fn test_get_number() {
+        use stylus_sdk::testing::*;
+        let vm = TestVM::default();
+        let mut contract = Counter::from(&vm);
+
+        // Test initial state
+        assert_eq!(U256::ZERO, contract.get_number());
+        assert_eq!(contract.get_number(), contract.number()); // Should match number() method
+
+        // Test after setting a value
+        contract.set_number(U256::from(42));
+        assert_eq!(U256::from(42), contract.get_number());
+        assert_eq!(contract.get_number(), contract.number());
+
+        // Test after increment
+        contract.increment();
+        assert_eq!(U256::from(43), contract.get_number());
+        assert_eq!(contract.get_number(), contract.number());
+
+        // Test after add_number
+        contract.add_number(U256::from(7));
+        assert_eq!(U256::from(50), contract.get_number());
+        assert_eq!(contract.get_number(), contract.number());
     }
 }

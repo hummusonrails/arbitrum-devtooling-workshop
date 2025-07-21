@@ -106,7 +106,38 @@ cargo stylus export-abi --json > ../../frontend/src/abi/CounterStylus.json
 
 * Open the exported ABI file and make sure it only includes the ABI in JSON format and no extra metadata.
 
-### 6. Connect Frontend to Contracts
+### 6. Interact with Contracts Using Cast (Exercise)
+
+> [!NOTE]
+> **Exercise**: Explore the deployed contracts using cast commands!
+
+* **Your Task**: Look at the contract source code in both `contracts/contract-solidity/counter/src/Counter.sol` and `contracts/contract-stylus/counter/src/lib.rs` to identify all available functions.
+
+* **Example Command Format**:
+  ```bash
+  # Read functions (view/pure functions)
+  cast call <CONTRACT_ADDRESS> "<FUNCTION_SIGNATURE>" --rpc-url http://localhost:8547 | cast --to-dec
+  
+  # Write functions (state-changing functions)
+  cast send <CONTRACT_ADDRESS> "<FUNCTION_SIGNATURE>" <ARGS> --rpc-url http://localhost:8547 --private-key <PRIVATE_KEY>
+  ```
+
+* **Try These Interactions**:
+  1. Read the current counter value
+  2. Set the counter to a specific number
+  3. Increment the counter
+  4. Add a number to the counter
+  5. Multiply the counter by a number
+
+* **Example**:
+  ```bash
+  # Get the current number (replace with your contract address)
+  cast call 0x8464135c8F25Da09e49BC8782676a84730C318bC "getNumber()" --rpc-url http://localhost:8547 | cast --to-dec
+  ```
+
+* **Hint**: Use the private key from the test accounts section below for write operations.
+
+### 7. Connect Frontend to Contracts
 
 * The frontend is in `apps/frontend`.
 * Update the config file (e.g., `apps/frontend/src/config/contracts.ts`):
@@ -118,7 +149,7 @@ export const CONTRACT_ADDRESSES = {
 } as const;
 ```
 
-### 7. Implement Contract Interactions (Frontend Exercise)
+### 8. Implement Contract Interactions (Frontend Exercise)
 
 > The UI is provided, but you must implement the contract method calls!
 
@@ -126,13 +157,13 @@ export const CONTRACT_ADDRESSES = {
 - Switch between contracts using the menu bar.
 - See `apps/frontend/src/components/Counter.tsx` for where to add your logic.
 
-### 8. Start the Frontend
+### 9. Start the Frontend
 
 ```bash
 pnpm --filter frontend dev
 ```
 
-### 9. Test Accounts & Funding
+### 10. Test Accounts & Funding
 
 **Deployer Account:**
 * Address: `0x3f1Eae7D46d88F08fc2F8ed27FCb2AB183EB2d0E`

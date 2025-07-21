@@ -111,4 +111,21 @@ contract CounterTest is PRBTest, StdCheats {
         counter.mulNumber(multiplier);
         assertEq(counter.number(), initial * multiplier);
     }
+
+    function testGetNumber() public {
+        // Test initial state
+        assertEq(counter.getNumber(), 0);
+        
+        // Test after setting a value
+        uint256 testValue = 42;
+        counter.setNumber(testValue);
+        assertEq(counter.getNumber(), testValue);
+        assertEq(counter.getNumber(), counter.number()); // Should match public variable
+        
+        // Test after increment
+        counter.increment();
+        assertEq(counter.getNumber(), testValue + 1);
+        
+        console2.log("getNumber test passed, final value:", counter.getNumber());
+    }
 }

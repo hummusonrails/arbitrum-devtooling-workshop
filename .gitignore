@@ -14,6 +14,7 @@ contracts/**/typechain/
 contracts/**/*.abi
 contracts/**/*.bin
 contracts/**/*.dbg.json
+contracts/**/out/
 
 # Node.js/JS/TS (monorepo, pnpm, etc)
 node_modules/
