@@ -79,8 +79,8 @@ cd apps/nitro-devnode
 * Build and deploy locally:
 
 ```bash
-pnpm --filter contracts-stylus build
-pnpm --filter contracts-stylus deploy:local
+pnpm --filter stylus-counter build
+pnpm --filter stylus-counter deploy:local
 ```
 * Copy the deployed contract address for later use.
 
@@ -90,8 +90,8 @@ pnpm --filter contracts-stylus deploy:local
 * Build and deploy locally:
 
 ```bash
-pnpm --filter contracts-solidity build
-pnpm --filter contracts-solidity deploy:local
+pnpm --filter solidity-counter build
+pnpm --filter solidity-counter deploy:local
 ```
 * Copy the deployed contract address for later use.
 
@@ -162,8 +162,8 @@ pnpm --filter frontend dev
 ### 10. Testing Contracts
 
 ```bash
-pnpm --filter contracts-stylus test
-pnpm --filter contracts-solidity test
+pnpm --filter stylus-counter test
+pnpm --filter solidity-counter test
 ```
 
 ## Network Settings

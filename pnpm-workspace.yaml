@@ -1,0 +1,5 @@
+packages:
+  - 'frontend'
+  - 'contracts/contract-stylus/counter'
+  - 'contracts/contract-solidity/counter'
+  - 'scripts'
