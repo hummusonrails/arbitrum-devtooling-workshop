@@ -1,5 +1,9 @@
 # 🛠️ Arbitrum Devtooling Workshop
 
+<div align="center">
+  <img src="./screenshot.png" alt="screenshot of frontend" width="50%">
+</div>
+
 > [!NOTE]
 > Learn the essentials of developer tooling on Arbitrum using both Solidity and Stylus (Rust), and connect them to a modern frontend. All in a preconfigured Codespace!
 
@@ -15,7 +19,7 @@
 
 Run the workshop in a preconfigured Codespace — no setup required!
 
-[![Open in Codespaces](https://img.shields.io/badge/Open%20in-GitHub%20Codespaces-blue?logo=github&logoColor=white&style=for-the-badge)](https://codespaces.new/hummusonrails/arbitrum-devtooling-workshop)
+[![Open in Codespaces](https://img.shields.io/badge/Open%20in-GitHub%20Codespaces-blue?logo=github&logoColor=white&style=for-the-badge)](https://codespaces.new/hummusonrails/arbitrum-devtooling-workshop/tree/workshop)
 
 **Steps:**
 1. Click the button above.
@@ -45,14 +49,16 @@ For running locally:
 ## Project Structure Overview
 
 ```bash
-apps/
-├── frontend              # React + Vite + TS frontend
-├── contracts-stylus      # Stylus (Rust) Counter contract
-├── contracts-solidity    # Solidity Counter contract
-├── nitro-devnode         # Local Arbitrum node
+contracts/
+├── contract-solidity/    # Solidity Counter contract
+│   └── counter/          # Foundry project with src/, test/, etc.
+└── contract-stylus/      # Stylus (Rust) Counter contract
+    └── counter/          # Cargo project with src/, Cargo.toml, etc.
+frontend/                 # React + Vite + TS frontend
+nitro-devnode/            # Local Arbitrum node setup
 scripts/
-├── fund.sh               # Fund test accounts
-└── ...                   # Other helper scripts
+├── funds.sh              # Fund test accounts
+└── package.json          # Script utilities
 ```
 
 ## Workshop Exercises
@@ -63,19 +69,23 @@ scripts/
 pnpm install -r
 ```
 
-### 2. Run Nitro Devnode
+### Step 2: Start Local Arbitrum Node
 
 > [!NOTE]
-> Codespaces users: This is mostly handled for you, but you still need to manually start the devnode inside the correct directory.
+> Codespaces users: This is mostly handled for you, but you still need to manually start the devnode.
 
 ```bash
-cd apps/nitro-devnode
+cd nitro-devnode
 ./run-dev-node.sh
 ```
 
-### 3. Build & Deploy Stylus Counter Contract
+Once done open a new terminal window and continue to the next step.
 
-* Stylus contract code is provided in `apps/contracts-stylus/counter/src/lib.rs`.
+### Step 3: Deploy Smart Contracts
+
+#### Build & Deploy Stylus Counter Contract
+
+* Stylus contract code is provided in `contracts/contract-stylus/counter/src/lib.rs`.
 * Build and deploy locally:
 
 ```bash
@@ -84,9 +94,9 @@ pnpm --filter stylus-counter deploy:local
 ```
 * Copy the deployed contract address for later use.
 
-### 4. Build & Deploy Solidity Counter Contract
+#### Build & Deploy Solidity Counter Contract
 
-* Solidity contract code is provided in `apps/contracts-solidity/counter/contracts/Counter.sol`.
+* Solidity contract code is provided in `contracts/contract-solidity/counter/src/Counter.sol`.
 * Build and deploy locally:
 
 ```bash
@@ -100,16 +110,47 @@ pnpm --filter solidity-counter deploy:local
 * Use cargo stylus to export the ABI:
 
 ```bash
-cd apps/contracts-stylus
+cd contracts/contract-stylus
 cargo stylus export-abi --json > ../../frontend/src/abi/CounterStylus.json
 ```
 
 * Open the exported ABI file and make sure it only includes the ABI in JSON format and no extra metadata.
 
-### 6. Connect Frontend to Contracts
+### 6. Interact with Contracts Using Cast (Exercise)
 
-* The frontend is in `apps/frontend`.
-* Update the config file (e.g., `apps/frontend/src/config/contracts.ts`):
+> [!NOTE]
+> **Exercise**: Explore the deployed contracts using cast commands!
+
+* **Your Task**: Look at the contract source code in both `contracts/contract-solidity/counter/src/Counter.sol` and `contracts/contract-stylus/counter/src/lib.rs` to identify all available functions.
+
+* **Example Command Format**:
+  ```bash
+  # Read functions (view/pure functions)
+  cast call <CONTRACT_ADDRESS> "<FUNCTION_SIGNATURE>" --rpc-url http://localhost:8547 | cast --to-dec
+  
+  # Write functions (state-changing functions)
+  cast send <CONTRACT_ADDRESS> "<FUNCTION_SIGNATURE>" <ARGS> --rpc-url http://localhost:8547 --private-key <PRIVATE_KEY>
+  ```
+
+* **Try These Interactions**:
+  1. Read the current counter value
+  2. Set the counter to a specific number
+  3. Increment the counter
+  4. Add a number to the counter
+  5. Multiply the counter by a number
+
+* **Example**:
+  ```bash
+  # Get the current number (replace with your contract address)
+  cast call 0x8464135c8F25Da09e49BC8782676a84730C318bC "getNumber()" --rpc-url http://localhost:8547 | cast --to-dec
+  ```
+
+* **Hint**: Use the private key from the test accounts section below for write operations.
+
+### 7. Connect Frontend to Contracts
+
+* The frontend is in `frontend`.
+* Update the config file (e.g., `frontend/src/config/contracts.ts`):
 
 ```ts
 export const CONTRACT_ADDRESSES = {
@@ -118,21 +159,84 @@ export const CONTRACT_ADDRESSES = {
 } as const;
 ```
 
-### 7. Implement Contract Interactions (Frontend Exercise)
+### 8. Frontend Development Workshop 🌐
 
-> The UI is provided, but you must implement the contract method calls!
+> [!TIP]
+> **Main Learning Focus**: The contracts are complete! Your task is to study and understand the frontend Web3 integration patterns using viem.
 
-- Use [viem](https://viem.sh/) and [wagmi](https://wagmi.sh/) to wire up the increment and read methods for both contracts.
-- Switch between contracts using the menu bar.
-- See `apps/frontend/src/components/Counter.tsx` for where to add your logic.
+#### 📚 **Learning Objectives**
+- Master viem library for blockchain interactions
+- Understand wallet connection and state management
+- Learn contract reading vs writing patterns
+- Practice transaction handling and user feedback
 
-### 8. Start the Frontend
+#### 🔍 **Study These Guided Components**
+
+The frontend contains educational comments and learning tasks:
+
+**1. `frontend/src/contexts/Web3Context.tsx`** - Web3 Context & Wallet Connection
+- 📝 **Task 1**: Study the Web3 context interface and client types
+- 🔗 **Task 2**: Understand `publicClient` vs `walletClient` differences
+- 🪝 **Task 3**: Learn custom hook patterns for Web3 state
+
+**2. `frontend/src/components/Counter.tsx`** - Contract Interaction Patterns
+- 📋 **Task 1**: Understand component props and TypeScript interfaces
+- 🔗 **Task 2**: Study Web3 context integration
+- 📊 **Task 3**: Learn state management for contract interaction
+- 📖 **Task 4**: Master contract reading with `publicClient.readContract()`
+- ✍️ **Task 5**: Master contract writing with `walletClient.writeContract()`
+- 🎯 **Task 6**: Study different function handler patterns
+
+**3. `frontend/src/components/ETHBalance.tsx`** - Balance Fetching & Formatting
+- Learn how to fetch and display wallet balances
+- Understand automatic refresh patterns
+
+#### 🎯 **Key Learning Points**
+
+**Contract Reading (No Wallet Required)**
+```typescript
+// Study this pattern in Counter.tsx
+const result = await publicClient.readContract({
+  address: contractAddress as `0x${string}`,
+  abi,
+  functionName: 'number',
+  args: [],
+});
+```
+
+**Contract Writing (Wallet Required)**
+```typescript
+// Study this pattern in Counter.tsx
+const hash = await walletClient.writeContract({
+  address: contractAddress as `0x${string}`,
+  abi,
+  functionName: 'increment',
+  args: [],
+  account: address as `0x${string}`,
+});
+```
+
+**Transaction Confirmation**
+```typescript
+// Study this pattern for proper UX
+await publicClient.waitForTransactionReceipt({ hash });
+await fetchCounterValue(); // Refresh UI
+```
+
+#### 🚀 **Workshop Tasks**
+1. **Explore the Code**: Read through the guided components and understand each TODO comment
+2. **Test Interactions**: Use the UI to interact with both Stylus and Solidity contracts
+3. **Compare Patterns**: Notice how the same frontend code works with both contract types
+4. **Study Transactions**: Watch how transactions are handled from initiation to confirmation
+5. **Understand Types**: See how TypeScript helps with Web3 development
+
+### 9. Start the Frontend
 
 ```bash
 pnpm --filter frontend dev
 ```
 
-### 9. Test Accounts & Funding
+### 10. Test Accounts & Funding
 
 **Deployer Account:**
 * Address: `0x3f1Eae7D46d88F08fc2F8ed27FCb2AB183EB2d0E`
@@ -159,7 +263,7 @@ pnpm --filter frontend dev
 ./scripts/fund.sh
 ```
 
-### 10. Testing Contracts
+### 11. Testing Contracts
 
 ```bash
 pnpm --filter stylus-counter test

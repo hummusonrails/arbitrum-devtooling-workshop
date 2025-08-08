@@ -1,81 +1,129 @@
+// 🌐 DEVTOOLING WORKSHOP: Contract Interaction with viem
+// 
+// Welcome to the frontend portion of the workshop! You'll learn how to:
+// - Connect to Web3 wallets using custom React context
+// - Read contract state using viem's publicClient
+// - Write to contracts using viem's walletClient
+// - Handle transaction states and user feedback
+// - Parse and format blockchain data
+
 import { useState, useEffect } from 'react';
 import { useWeb3 } from '../contexts/Web3Context';
 import { parseEther } from 'viem';
 import ETHBalance from './ETHBalance';
 
+// 📋 TASK 1: Understanding Component Props and TypeScript
+// This component receives contract details as props, making it reusable
+// for both Stylus and Solidity contracts with the same ABI
 interface CounterProps {
-  contractAddress: string;
-  name: string;
-  abi: any[];
+  contractAddress: string;  // The deployed contract address
+  name: string;            // Display name ("Stylus" or "Solidity")
+  abi: any[];             // Contract ABI for function calls
 }
 
 export default function Counter({ contractAddress, name, abi }: CounterProps) {
+  // 🔗 TASK 2: Web3 Context Integration
+  // TODO: Examine the useWeb3 hook to understand how it provides:
+  // - publicClient: For reading blockchain data (no wallet needed)
+  // - walletClient: For sending transactions (requires connected wallet)
+  // - address: Current connected wallet address
+  // - isConnected: Boolean indicating wallet connection status
   const { publicClient, walletClient, address, isConnected } = useWeb3();
-  const [currentNumber, setCurrentNumber] = useState<bigint>(0n);
-  const [inputValue, setInputValue] = useState<string>('');
-  const [ethValue, setEthValue] = useState<string>('');
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [txHash, setTxHash] = useState<string>('');
+  
+  // 📊 TASK 3: State Management for Contract Interaction
+  // React state to manage contract data and UI states
+  const [currentNumber, setCurrentNumber] = useState<bigint>(0n);  // Contract's number value
+  const [inputValue, setInputValue] = useState<string>('');        // User input for functions
+  const [ethValue, setEthValue] = useState<string>('');           // ETH amount for payable functions
+  const [isLoading, setIsLoading] = useState<boolean>(false);     // Transaction loading state
+  const [txHash, setTxHash] = useState<string>('');               // Transaction hash for feedback
 
-  // Fetch current counter value
+  // 📖 TASK 4: Reading Contract State with viem's publicClient
+  // This function demonstrates how to read data from a smart contract
+  // without needing a connected wallet (read-only operations)
   const fetchCounterValue = async () => {
+    // Always check if publicClient is available before making calls
     if (!publicClient) return;
     
     try {
+      // TODO: Study this viem readContract call structure:
+      // - address: Contract address (must be properly typed as `0x${string}`)
+      // - abi: Contract ABI containing function signatures
+      // - functionName: The contract function to call
+      // - args: Arguments for the function (empty array for getter)
       const result = await publicClient.readContract({
         address: contractAddress as `0x${string}`,
         abi,
-        functionName: 'number',
-        args: [],
+        functionName: 'number',  // Calling the public 'number' getter
+        args: [],                // No arguments needed for getter
       });
+      
+      // Convert result to bigint for proper handling of uint256
       setCurrentNumber(result as unknown as bigint);
     } catch (error) {
       console.error('Failed to fetch counter value:', error);
     }
   };
 
-  // Execute contract function
+  // ✍️ TASK 5: Writing to Contracts with viem's walletClient
+  // This function demonstrates how to send transactions to smart contracts
+  // Requires a connected wallet for signing and paying gas fees
   const executeFunction = async (functionName: string, args: any[] = [], value?: bigint) => {
+    // TODO: Study the wallet connection check - why is this necessary?
+    // - walletClient: Needed to sign and send transactions
+    // - address: Confirms user has connected their wallet
     if (!walletClient || !address) {
       alert('Please connect your wallet first');
       return;
     }
 
+    // Set loading state for better UX during transaction processing
     setIsLoading(true);
     setTxHash('');
 
     try {
+      // TODO: Compare this writeContract call with readContract above:
+      // - Requires walletClient instead of publicClient
+      // - Returns transaction hash, not contract data
+      // - Can include 'value' for payable functions
       const hash = await walletClient.writeContract({
         address: contractAddress as `0x${string}`,
         abi,
-        functionName,
-        args,
-        value,
-        account: address as `0x${string}`,
-        chain: null,
+        functionName,  // Dynamic function name passed as parameter
+        args,          // Function arguments array
+        value,         // ETH value for payable functions (optional)
+        account: address as `0x${string}`,  // User's wallet address
+        chain: null,   // Use default chain from wallet
       });
       
+      // Store transaction hash for user feedback
       setTxHash(hash);
       
-      // Wait for transaction confirmation
+      // TODO: Study transaction confirmation pattern:
+      // - waitForTransactionReceipt: Waits for transaction to be mined
+      // - fetchCounterValue: Updates UI with new contract state
       if (publicClient) {
         await publicClient.waitForTransactionReceipt({ hash });
-        await fetchCounterValue(); // Refresh counter value
+        await fetchCounterValue(); // Refresh counter value after successful tx
       }
     } catch (error) {
       console.error(`Failed to execute ${functionName}:`, error);
       alert(`Transaction failed: ${error}`);
     } finally {
-      setIsLoading(false);
+      setIsLoading(false);  // Always reset loading state
     }
   };
 
-  // Contract function handlers
+  // 🎯 TASK 6: Contract Function Handlers
+  // These functions demonstrate different patterns for calling contract methods
+  
+  // Simple function with no parameters
   const handleIncrement = () => executeFunction('increment');
   
+  // Function with user input parameter
   const handleSetNumber = () => {
-    if (!inputValue) return;
-    const value = BigInt(inputValue);
+    if (!inputValue) return;  // Input validation
+    const value = BigInt(inputValue);  // Convert string to BigInt for uint256
     executeFunction('setNumber', [value]);
   };
   

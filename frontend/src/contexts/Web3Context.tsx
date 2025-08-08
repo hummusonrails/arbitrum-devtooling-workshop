@@ -1,18 +1,33 @@
+// 🔗 DEVTOOLING WORKSHOP: Wallet Connection & viem Clients
+//
+// This context demonstrates essential Web3 patterns:
+// - Setting up viem clients for reading and writing to blockchain
+// - Managing wallet connection state across the application
+// - Handling different client types (public vs wallet)
+// - Working with browser wallet providers (MetaMask, etc.)
+
 import React, { createContext, ReactNode, useState, useContext } from 'react';
 import { createPublicClient, createWalletClient, custom } from 'viem';
 import { localhost } from '../constants';
 
-
+// 📝 TASK 1: Understanding the Web3 Context Interface
+// This interface defines what our Web3 context will provide to components
 interface Web3ContextType {
-  publicClient: ReturnType<typeof createPublicClient> | null;
-  walletClient: ReturnType<typeof createWalletClient> | null;
-  address: string | null;
-  chainId: number | null;
-  connect: () => Promise<void>;
-  disconnect: () => void;
-  isConnected: boolean;
+  // TODO: Study these two client types - what's the difference?
+  publicClient: ReturnType<typeof createPublicClient> | null;  // For reading blockchain data
+  walletClient: ReturnType<typeof createWalletClient> | null;  // For sending transactions
+  
+  // Wallet connection state
+  address: string | null;      // Connected wallet address
+  chainId: number | null;      // Current blockchain network ID
+  
+  // Connection management functions
+  connect: () => Promise<void>;    // Connect to user's wallet
+  disconnect: () => void;          // Disconnect from wallet
+  isConnected: boolean;            // Connection status
 }
 
+// Create the context with default values
 const Web3Context = createContext<Web3ContextType>({
   publicClient: null,
   walletClient: null,
@@ -23,6 +38,7 @@ const Web3Context = createContext<Web3ContextType>({
   isConnected: false,
 });
 
+// 🪝 Custom hook to use the Web3 context in components
 export const useWeb3 = () => useContext(Web3Context);
 
 export const Web3Provider = ({ children }: { children: ReactNode }) => {
