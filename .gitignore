@@ -1,0 +1,44 @@
+/target
+.env
+# Rust
+**/Cargo.lock
+**/target/
+*.rs.bk
+*.rlib
+*.d
+
+# Solidity/Hardhat/Foundry/Typechain
+contracts/**/artifacts/
+contracts/**/cache/
+contracts/**/typechain/
+contracts/**/*.abi
+contracts/**/*.bin
+contracts/**/*.dbg.json
+contracts/**/out/
+
+# Node.js/JS/TS (monorepo, pnpm, etc)
+node_modules/
+
+# React + Vite + TypeScript (frontend)
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/.env*
+frontend/*.log
+frontend/.vite/
+frontend/coverage/
+frontend/.nyc_output/
+frontend/*.tsbuildinfo
+
+# Logs
+*.log
+
+# OS generated files
+.DS_Store
+
+# Editor directories
+.vscode/
+.idea/
+
+# Misc
+.env.*
