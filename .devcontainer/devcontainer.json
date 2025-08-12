@@ -10,7 +10,7 @@
       "ghcr.io/devcontainers/features/git:1": {}
     },
   
-    "postAttachCommand": "rustup install 1.87.0 && rustup default 1.87.0 && rustup target add wasm32-unknown-unknown && npm install -g pnpm && pnpm install -r && cargo install --force cargo-stylus && curl -L https://foundry.paradigm.xyz | bash && /home/vscode/.foundry/bin/foundryup",
+    "postAttachCommand": "bash -lc 'set -euo pipefail && rustup install 1.87.0 && rustup default 1.87.0 && rustup target add wasm32-unknown-unknown && npm install -g pnpm && pnpm install -r && cargo install --force cargo-stylus && curl -L https://foundry.paradigm.xyz | bash && /home/vscode/.foundry/bin/foundryup && SOLC_VER=0.8.26 && if ! command -v solc >/dev/null 2>&1; then curl -L -o /tmp/solc-static-linux https://github.com/ethereum/solidity/releases/download/v${SOLC_VER}/solc-static-linux && sudo mv /tmp/solc-static-linux /usr/local/bin/solc && sudo chmod +x /usr/local/bin/solc; fi && which solc && solc --version'",
   
     "customizations": {
       "vscode": {

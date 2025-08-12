@@ -110,8 +110,8 @@ pnpm --filter solidity-counter deploy:local
 * Use cargo stylus to export the ABI:
 
 ```bash
-cd contracts/contract-stylus
-cargo stylus export-abi --json > ../../frontend/src/abi/CounterStylus.json
+cd contracts/contract-stylus/counter
+cargo stylus export-abi --json > ../../../frontend/src/abi/CounterStylus.json
 ```
 
 * Open the exported ABI file and make sure it only includes the ABI in JSON format and no extra metadata.
