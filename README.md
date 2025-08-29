@@ -145,6 +145,11 @@ cargo stylus export-abi --json > ../../../frontend/src/abi/CounterStylus.json
   cast call 0x8464135c8F25Da09e49BC8782676a84730C318bC "getNumber()" --rpc-url http://localhost:8547 | cast --to-dec
   ```
 
+  # Set the current number cast send (replace with your contract address)
+  ```
+  cast send 0x8464135c8F25Da09e49BC8782676a84730C318bC "addNumber(uint256)" 1  --rpc-url  http://localhost:8547 --private-key 
+  ```
+
 * **Hint**: Use the private key from the test accounts section below for write operations.
 
 ### 7. Connect Frontend to Contracts
