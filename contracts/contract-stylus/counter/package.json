@@ -10,8 +10,5 @@
       "export-abi": "cargo stylus export-abi",
       "nitro-node": "if [ -x ../../nitro-devnode/run-dev-node.sh ]; then (cd ../../nitro-devnode && ./run-dev-node.sh); else echo '[ERROR] Nitro devnode not found. Please ensure ../../nitro-devnode exists and run-dev-node.sh is present.'; fi",
       "fund-accounts": "node -e \"require('child_process').execFileSync(require('path').resolve(__dirname, '../../scripts/funds.sh'), { stdio: 'inherit' })\""
-    },
-    "dependencies": {
-      "ethers": "^6.14.1"
     }
   }
