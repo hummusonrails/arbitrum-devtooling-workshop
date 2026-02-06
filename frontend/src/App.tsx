@@ -13,7 +13,7 @@ export const {
   SOLIDITY_COUNTER: SOLIDITY_COUNTER_CONTRACT_ADDRESS,
 } = CONTRACT_ADDRESSES;
 
-const App = (): JSX.Element => {
+const App = () => {
   return (
     <Web3Provider>
       <Router>

@@ -63,7 +63,7 @@ scripts/
 
 ## Workshop Exercises
 
-### 1. Install Dependencies
+### Step 1: Install Dependencies
 
 ```bash
 pnpm install -r
@@ -105,7 +105,7 @@ pnpm --filter solidity-counter deploy:local
 ```
 * Copy the deployed contract address for later use.
 
-### 5. Export Stylus Contract ABI
+### Step 4: Export Stylus Contract ABI
 
 * Use cargo stylus to export the ABI:
 
@@ -116,7 +116,7 @@ cargo stylus export-abi --json > ../../../frontend/src/abi/CounterStylus.json
 
 * Open the exported ABI file and make sure it only includes the ABI in JSON format and no extra metadata.
 
-### 6. Interact with Contracts Using Cast (Exercise)
+### Step 5: Interact with Contracts Using Cast (Exercise)
 
 > [!NOTE]
 > **Exercise**: Explore the deployed contracts using cast commands!
@@ -145,14 +145,14 @@ cargo stylus export-abi --json > ../../../frontend/src/abi/CounterStylus.json
   cast call 0x8464135c8F25Da09e49BC8782676a84730C318bC "getNumber()" --rpc-url http://localhost:8547 | cast --to-dec
   ```
 
+  ```bash
   # Set the current number cast send (replace with your contract address)
-  ```
-  cast send 0x8464135c8F25Da09e49BC8782676a84730C318bC "addNumber(uint256)" 1  --rpc-url  http://localhost:8547 --private-key 
+  cast send 0x8464135c8F25Da09e49BC8782676a84730C318bC "addNumber(uint256)" 1 --rpc-url http://localhost:8547 --private-key <PRIVATE_KEY>
   ```
 
 * **Hint**: Use the private key from the test accounts section below for write operations.
 
-### 7. Connect Frontend to Contracts
+### Step 6: Connect Frontend to Contracts
 
 * The frontend is in `frontend`.
 * Update the config file (e.g., `frontend/src/config/contracts.ts`):
@@ -164,7 +164,7 @@ export const CONTRACT_ADDRESSES = {
 } as const;
 ```
 
-### 8. Frontend Development Workshop 🌐
+### Step 7: Frontend Development Workshop 🌐
 
 > [!TIP]
 > **Main Learning Focus**: The contracts are complete! Your task is to study and understand the frontend Web3 integration patterns using viem.
@@ -235,13 +235,13 @@ await fetchCounterValue(); // Refresh UI
 4. **Study Transactions**: Watch how transactions are handled from initiation to confirmation
 5. **Understand Types**: See how TypeScript helps with Web3 development
 
-### 9. Start the Frontend
+### Step 8: Start the Frontend
 
 ```bash
 pnpm --filter frontend dev
 ```
 
-### 10. Test Accounts & Funding
+### Step 9: Test Accounts & Funding
 
 **Deployer Account:**
 * Address: `0x3f1Eae7D46d88F08fc2F8ed27FCb2AB183EB2d0E`
@@ -265,10 +265,10 @@ pnpm --filter frontend dev
 **Fund User Wallets:**
 
 ```bash
-./scripts/fund.sh
+pnpm --filter scripts fund
 ```
 
-### 11. Testing Contracts
+### Step 10: Testing Contracts
 
 ```bash
 pnpm --filter stylus-counter test
